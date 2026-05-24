@@ -1,116 +1,129 @@
 {
   "theme": "dark",
-  "archetype": "5 (Luxury) + 4 (Swiss & High-Contrast) - Premium Security",
-  "brand_name": "Scam-Link Sentinel",
+  "archetype": "7 (Electric & Neon) / Technical Schematic",
   "colors": {
     "background": {
-      "base": "#0A0A0A",
-      "surface": "#141414",
-      "surface_elevated": "#1C1C1C",
-      "glass": "bg-black/60 backdrop-blur-2xl border border-white/10"
+      "main": "#050505",
+      "surface": "#0a0a0c",
+      "surface_elevated": "#111116",
+      "overlay": "rgba(5, 5, 5, 0.85)"
     },
     "primary": {
-      "DEFAULT": "#FFB000",
-      "hover": "#FFC133",
-      "text": "#000000",
-      "glow": "rgba(255, 176, 0, 0.4)"
+      "cyan": "#00F0FF",
+      "blue": "#0055FF",
+      "glow": "rgba(0, 240, 255, 0.4)"
     },
-    "accent": {
-      "gold": "#FFD700",
-      "safe": "#00E676",
-      "danger": "#FF3333"
+    "secondary": {
+      "magenta": "#FF007F",
+      "purple": "#7000FF",
+      "glow": "rgba(255, 0, 127, 0.4)"
     },
     "text": {
       "primary": "#FFFFFF",
-      "secondary": "#A1A1AA",
-      "muted": "#71717A"
+      "secondary": "#A0A0B0",
+      "muted": "#606070"
     },
     "border": {
-      "DEFAULT": "rgba(255, 255, 255, 0.1)",
-      "highlight": "rgba(255, 176, 0, 0.3)"
+      "default": "rgba(255, 255, 255, 0.08)",
+      "active": "rgba(0, 240, 255, 0.5)"
+    },
+    "status": {
+      "safe": "#00FF66",
+      "danger": "#FF0033",
+      "warning": "#FFB800"
     }
   },
   "typography": {
-    "headings": {
-      "font_family": "Unbounded, sans-serif",
-      "weights": ["400", "700", "900"],
-      "tracking": "tracking-tight"
-    },
-    "body": {
-      "font_family": "Outfit, sans-serif",
-      "weights": ["300", "400", "500"]
-    },
-    "mono": {
-      "font_family": "JetBrains Mono, monospace",
-      "usage": "Threat Feed, Risk Scores, Logs"
+    "heading_font": "Unbounded, display",
+    "body_font": "JetBrains Mono, monospace",
+    "mono_font": "JetBrains Mono, monospace",
+    "scale_rules": {
+      "h1": "text-5xl md:text-6xl tracking-tighter font-black text-white",
+      "h2": "text-3xl md:text-4xl tracking-tight font-bold text-white",
+      "h3": "text-xl md:text-2xl tracking-tight font-semibold text-white",
+      "body": "text-base leading-relaxed text-[#A0A0B0]",
+      "overline": "text-xs tracking-[0.2em] uppercase text-[#00F0FF] font-bold"
     }
   },
-  "layout_spacing": {
-    "philosophy": "Generous Spacing (p-8 to p-24) with strict grid structures. Bento Grids for features.",
-    "bento_grid": "grid-cols-1 md:grid-cols-12 gap-6 md:gap-8",
-    "surface_treatment": "Deep dark backgrounds with 1px border-white/10, NO heavy gradients unless it's a glowing 'tracing beam' for the pricing card."
+  "layout_and_spacing": {
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_spacing": "py-24 md:py-32",
+    "grid_system": {
+      "style": "Bento 'Control Room' Grid for features, Asymmetric 'Tetris' for Hero",
+      "gap": "gap-6 md:gap-8"
+    }
+  },
+  "surface_styles": {
+    "cards": "bg-[#0a0a0c] border border-white/10 backdrop-blur-xl rounded-none",
+    "glow_border": "relative before:absolute before:inset-0 before:p-[1px] before:bg-gradient-to-r before:from-[#00F0FF]/50 before:to-[#FF007F]/50 before:-z-10 before:rounded-none",
+    "glass": "bg-[#050505]/80 backdrop-blur-2xl border-b border-white/10"
   },
   "components": {
     "hero": {
-      "structure": "Asymmetric layout. Left: High-impact typography + Waitlist Form. Right: 3D Smartphone Bot Mockup floating over Amber Shield.",
-      "effects": "Hero image needs a glowing radial gradient behind it. Max overlay opacity bg-black/50."
+      "layout": "Grid split or asymmetrical overlay, heavy use of hero_grid_background with dark gradient mask",
+      "cta": "Neon cyan glowing button, sharp edges, no border-radius. Hover: intensify glow and text to white.",
+      "visuals": "Integrate sentinel_shield or bot_ui_mockup"
     },
-    "forward_to_check_demo": {
-      "structure": "Interactive Shadcn Form inside a Glassmorphism container. Input for URL, Button to 'Scan'. Result reveals SAFE/DANGER animation.",
-      "effects": "Use Framer Motion for revealing the verdict. Danger verdict flashes red, Safe verdict pulses green."
+    "interactive_demo_widget": {
+      "style": "Terminal/Forensic scanner look. Input field with monospace font. Animated scanning progress bar (magenta to cyan).",
+      "interaction": "User inputs URL -> Fake delay with 'Analyzing on-chain logic' -> Outputs SAFE/DANGER bubble."
     },
-    "threat_feed": {
-      "structure": "Full-width marquee (react-fast-marquee).",
-      "style": "Monospace typography, text-sm, red/green accents for 'BLOCKED' or 'PHISHING'."
+    "feature_cards": {
+      "style": "Technical schematic nodes. High contrast borders, subtle grid overlays in background. Icons should be sharp, linear.",
+      "layout": "3-column grid on desktop, 1-column mobile."
+    },
+    "live_threat_feed": {
+      "style": "Auto-scrolling marquee (react-fast-marquee). Monospace text. Red/Danger tags for blocked threats. Small height.",
+      "colors": "bg-[#0a0a0c] border-y border-white/10 text-xs text-[#A0A0B0]"
     },
     "pricing_card": {
-      "structure": "Central focus, 'Tracing Beam' animated border effect, solid CTA.",
-      "accents": "Electric Amber glow."
+      "style": "Singular 'Founding Member' tier. Standout glow_border. Stripe CTA button in primary electric blue."
     }
   },
-  "media": {
-    "images": [
-      {
-        "category": "hero_background",
-        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/bca9378910529a030c4ee75ef9996dc5745fe3cd083f6059e67b94c640b300a2.png",
-        "description": "Cinematic abstract glowing electric amber and gold shield polygon"
-      },
-      {
-        "category": "bot_mockup",
-        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/8314a73724ff726f6f1bc4084393c162c957b9c37d0ed5e26662e1392988355d.png",
-        "description": "3D render of a dark sleek modern smartphone with chat interface"
-      },
-      {
-        "category": "feature_safe_icon",
-        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/6a91a71d06c04f00a3e0dc348f9b1b159ef9fdb4acebf037223bcfe18221abcd.png",
-        "description": "Abstract glowing neon green checkmark and secure lock"
-      },
-      {
-        "category": "feature_danger_icon",
-        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/cc4527dd0872e895647d377ccbd165a2361cf8f4f08332817c3a0b1d63ad82db.png",
-        "description": "Abstract glowing crimson red warning hazard skull"
-      },
-      {
-        "category": "abstract_network_bg",
-        "url": "https://images.unsplash.com/photo-1544380904-c686aad2fc40?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNzl8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGRhcmslMjBjeWJlcnNlY3VyaXR5JTIwbmV0d29ya3xlbnwwfHx8fDE3Nzk2MTkxOTB8MA&ixlib=rb-4.1.0&q=85",
-        "description": "3D computer graphics network dark bg"
-      }
-    ]
+  "effects_and_motion": {
+    "hover": "Subtle -translate-y-1, border color shifts to cyan or magenta, box-shadow glow increases.",
+    "reveal": "Framer motion staggered fade-up for grid items.",
+    "data_testid": "MANDATORY on all interactive elements (buttons, inputs, accordions)."
   },
-  "interactions": {
-    "hover_states": "All buttons MUST explicitly define hover colors. Primary buttons: bg-[#FFB000] hover:bg-[#FFC133] text-black.",
-    "animations": "Framer motion for staggered bento grid entrance. react-fast-marquee for threat feed.",
-    "testing": "All interactive elements MUST have data-testid attributes (e.g., data-testid='waitlist-submit')."
-  },
+  "image_urls": [
+    {
+      "category": "hero_background",
+      "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/62444ccd772e9580a7c2afc17c747839997b0d999e33b05680c7039a79e5b6c0.png",
+      "description": "Abstract futuristic cyber-security grid background, deep obsidian black with glowing cyan nodes",
+      "slug_name": "hero_grid_background"
+    },
+    {
+      "category": "hero_visual",
+      "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/11cc3ae147f433d4a57839cb86b9c9aaffc7712af843ecb1e628fb258726d0bf.png",
+      "description": "3D abstract glowing sentinel shield floating in deep space with cyan and magenta energy lines",
+      "slug_name": "sentinel_shield"
+    },
+    {
+      "category": "app_mockup",
+      "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/2186b5fa5ad2cfa6f87e6975630caf73e8ea39cb044898d904c1fb92dd018d5a.png",
+      "description": "Dark UI chat interface mockup on mobile showing link scanning result with glowing neon bubbles",
+      "slug_name": "bot_ui_mockup"
+    },
+    {
+      "category": "trust_logo",
+      "url": "https://images.pexels.com/photos/15863000/pexels-photo-15863000.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "AI / Tech integration logo representing forensic engine partner",
+      "slug_name": "tech_partner_1"
+    }
+  ],
+  "libraries_to_install": [
+    "framer-motion",
+    "lucide-react",
+    "react-fast-marquee",
+    "clsx",
+    "tailwind-merge"
+  ],
   "instructions_to_main_agent": [
-    "Use pure HTML/Tailwind for structural layout (bento grid, hero).",
-    "Use Shadcn for Interactive elements (Accordion for FAQ, Input/Button for Waitlist & Scan demo).",
-    "Integrate Stripe Checkout for the pricing button ($4.99/mo).",
-    "Store Waitlist form submissions in MongoDB.",
-    "DO NOT use Inter or standard sans for headings. Use 'Unbounded' font for headings, 'Outfit' for body, and 'JetBrains Mono' for data/logs.",
-    "Implement the 'Forward to Check' demo as an actual functional UI component that takes an input and shows a simulated scanning state then a SAFE/DANGER result.",
-    "Use Lucide React for standard icons (Shield, Lock, AlertTriangle).",
-    "Follow 'Tracing Beam' surface strategy for the pricing card.",
-    "Ensure high contrast rules are respected as per design system."
+    "Use raw HTML/Tailwind for layout to achieve the technical schematic dashboard look. Do NOT rely heavily on standard Shadcn Card unless heavily customized to look like forensic panels.",
+    "Implement the 'Forward to Check' feature as a functional interactive demo using React state. Fake a 2-3 second 'scanning' delay.",
+    "Include 'data-testid' on ALL CTAs, inputs, and the URL scanning form.",
+    "Backgrounds should be strictly dark (Obsidian Black). Avoid light mode entirely for this specific page.",
+    "Use Lucide icons, but styled with sharp lines and neon stroke colors.",
+    "Incorporate the provided `hero_grid_background` using a dark overlay `bg-black/85` so text remains completely readable."
   ]
 }
