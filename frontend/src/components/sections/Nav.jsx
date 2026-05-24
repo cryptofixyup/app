@@ -4,7 +4,7 @@ import { Menu, X, ShieldHalf } from "lucide-react";
 const links = [
   { label: "Scanner", href: "#scanner" },
   { label: "Modules", href: "#modules" },
-  { label: "Threats", href: "#threats" },
+  { label: "Mythos Guard", href: "#mythos-guard" },
   { label: "Pricing", href: "#pricing" },
   { label: "FAQ", href: "#faq" },
 ];
