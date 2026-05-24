@@ -139,7 +139,7 @@ async def scan_link(payload: ScanRequest):
 
     # Domain check
     if any(d in url for d in SAFE_DOMAINS):
-        if url.startswith("http") and ("//" + d in url or url.endswith(d) for d in SAFE_DOMAINS):
+        if url.startswith("http") and any("//" + d in url or url.endswith(d) for d in SAFE_DOMAINS):
             analysis.append("Domain matches verified registry.")
 
     # Lookalike / typosquat
@@ -289,34 +289,46 @@ async def checkout_status(session_id: str, http_request: Request):
     webhook_url = f"{host_url}api/webhook/stripe"
     stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
 
-    status: CheckoutStatusResponse = await stripe_checkout.get_checkout_status(session_id)
-
-    # Idempotent update
     existing = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
-    if existing and existing.get("payment_status") != "paid":
-        await db.payment_transactions.update_one(
-            {"session_id": session_id},
-            {"$set": {
-                "status": status.status,
-                "payment_status": status.payment_status,
-                "updated_at": datetime.now(timezone.utc).isoformat(),
-            }},
-        )
-        # On first successful payment, also auto-enroll the email in waitlist as founding member
-        if status.payment_status == "paid" and existing.get("email"):
-            await db.waitlist.update_one(
-                {"email": existing["email"]},
-                {"$set": {"founding_member": True}},
-                upsert=False,
-            )
 
-    return StatusResponse(
-        session_id=session_id,
-        status=status.status,
-        payment_status=status.payment_status,
-        amount_total=status.amount_total,
-        currency=status.currency,
-    )
+    try:
+        status: CheckoutStatusResponse = await stripe_checkout.get_checkout_status(session_id)
+        # Idempotent update
+        if existing and existing.get("payment_status") != "paid":
+            await db.payment_transactions.update_one(
+                {"session_id": session_id},
+                {"$set": {
+                    "status": status.status,
+                    "payment_status": status.payment_status,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }},
+            )
+            if status.payment_status == "paid" and existing.get("email"):
+                await db.waitlist.update_one(
+                    {"email": existing["email"]},
+                    {"$set": {"founding_member": True}},
+                    upsert=False,
+                )
+        return StatusResponse(
+            session_id=session_id,
+            status=status.status,
+            payment_status=status.payment_status,
+            amount_total=status.amount_total,
+            currency=status.currency,
+        )
+    except Exception as e:
+        # Stripe SDK lookup failed — fall back to persisted record so UX stays resilient.
+        logger.warning(f"Stripe status lookup failed for {session_id}: {e}")
+        if existing:
+            amount_cents = int(round(float(existing.get("amount", 0)) * 100))
+            return StatusResponse(
+                session_id=session_id,
+                status=existing.get("status", "open"),
+                payment_status=existing.get("payment_status", "pending"),
+                amount_total=amount_cents,
+                currency=existing.get("currency", "usd"),
+            )
+        raise HTTPException(404, "Session not found")
 
 
 @api_router.post("/webhook/stripe")
