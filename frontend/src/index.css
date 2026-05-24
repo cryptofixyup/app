@@ -111,6 +111,46 @@ html, body {
   box-shadow: 0 0 30px rgba(255, 0, 127, 0.25);
 }
 
+/* CSV / outline action button */
+.csv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--cyan);
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  font-size: 11px;
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  transition: all 180ms ease;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+}
+.csv-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: inherit;
+}
+.csv-btn:hover {
+  color: #000;
+  background: var(--cyan);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.55);
+}
+.csv-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: transparent;
+  color: var(--cyan);
+  box-shadow: none;
+}
+
 /* Schematic panel */
 .panel {
   background: linear-gradient(180deg, rgba(15, 15, 20, 0.85) 0%, rgba(8, 8, 12, 0.85) 100%);

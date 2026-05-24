@@ -52,3 +52,30 @@ export async function fetchSignups({ search = "", limit = 100, offset = 0 } = {}
   const { data } = await adminApi.get(`/signups?${params.toString()}`);
   return data;
 }
+
+export async function downloadSignupsCSV({ search = "" } = {}) {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  const response = await adminApi.get(`/signups.csv?${params.toString()}`, {
+    responseType: "blob",
+  });
+
+  // Try to extract filename from Content-Disposition
+  let filename = "sentinel-signups.csv";
+  const disposition = response.headers?.["content-disposition"];
+  if (disposition) {
+    const match = /filename="?([^"]+)"?/i.exec(disposition);
+    if (match) filename = match[1];
+  }
+
+  const blob = new Blob([response.data], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return filename;
+}

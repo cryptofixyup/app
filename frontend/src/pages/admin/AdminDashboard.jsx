@@ -12,10 +12,12 @@ import {
   MessageSquare,
   RefreshCw,
   Activity,
+  Download,
 } from "lucide-react";
 import {
   fetchMetrics,
   fetchSignups,
+  downloadSignupsCSV,
   me,
   clearToken,
   getToken,
@@ -33,6 +35,7 @@ export default function AdminDashboard() {
   const [loadingMetrics, setLoadingMetrics] = useState(true);
   const [loadingSignups, setLoadingSignups] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     if (!getToken()) {
@@ -93,6 +96,18 @@ export default function AdminDashboard() {
   const logout = () => {
     clearToken();
     navigate("/admin", { replace: true });
+  };
+
+  const exportCSV = async () => {
+    setExporting(true);
+    try {
+      const filename = await downloadSignupsCSV({ search: debouncedSearch });
+      toast.success(`Exported · ${filename}`);
+    } catch {
+      toast.error("Export failed. Try again.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   const totalPages = Math.max(1, Math.ceil((signups.total || 0) / PAGE_SIZE));
@@ -225,18 +240,34 @@ export default function AdminDashboard() {
                 Waitlist · {signups.total} total
               </div>
             </div>
-            <div className="relative w-full md:w-72">
-              <Search
-                size={14}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none"
-              />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="search email…"
-                className="w-full bg-[#050505] border border-white/15 pl-9 pr-3 py-2.5 text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF] font-mono text-xs transition-colors"
-                data-testid="admin-signup-search"
-              />
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <div className="relative w-full md:w-72">
+                <Search
+                  size={14}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none"
+                />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="search email…"
+                  className="w-full bg-[#050505] border border-white/15 pl-9 pr-3 py-2.5 text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF] font-mono text-xs transition-colors"
+                  data-testid="admin-signup-search"
+                />
+              </div>
+              <button
+                onClick={exportCSV}
+                disabled={exporting || signups.total === 0}
+                className="csv-btn"
+                data-testid="admin-export-csv-button"
+                title={signups.total === 0 ? "Nothing to export" : "Download CSV of current filter"}
+              >
+                {exporting ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <Download size={13} />
+                )}
+                Download CSV
+              </button>
             </div>
           </div>
 

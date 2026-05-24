@@ -1,9 +1,12 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import io
+import csv
 import logging
 import uuid
 import bcrypt
@@ -538,6 +541,73 @@ async def admin_signups(
         })
 
     return {"total": total, "limit": limit, "offset": offset, "items": enriched}
+
+
+@api_router.get("/admin/signups.csv")
+async def admin_signups_csv(
+    admin=Depends(get_current_admin),
+    search: Optional[str] = Query(None),
+):
+    query = {}
+    if search:
+        query["email"] = {"$regex": search, "$options": "i"}
+
+    cursor = db.waitlist.find(query, {"_id": 0}).sort("created_at", -1)
+    rows = await cursor.to_list(100_000)
+
+    emails = [r["email"] for r in rows if r.get("email")]
+    payments = {}
+    if emails:
+        async for doc in db.payment_transactions.find(
+            {"email": {"$in": emails}},
+            {"_id": 0, "email": 1, "payment_status": 1, "amount": 1},
+        ):
+            prev = payments.get(doc["email"])
+            if not prev or (
+                doc.get("payment_status") == "paid"
+                and prev.get("payment_status") != "paid"
+            ):
+                payments[doc["email"]] = doc
+
+    buf = io.StringIO()
+    writer = csv.writer(buf, quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(
+        [
+            "email",
+            "category",
+            "source",
+            "signed_up_at",
+            "founding_member",
+            "payment_status",
+            "payment_amount_usd",
+        ]
+    )
+    for r in rows:
+        p = payments.get(r.get("email")) or {}
+        category = "mythos_guard" if r.get("source") == "mythos_guard_beta" else "scam_link_sentinel"
+        writer.writerow(
+            [
+                r.get("email", ""),
+                category,
+                r.get("source", ""),
+                r.get("created_at", ""),
+                "yes" if r.get("founding_member") else "no",
+                p.get("payment_status", ""),
+                f"{float(p.get('amount', 0)):.2f}" if p.get("amount") is not None else "",
+            ]
+        )
+
+    csv_bytes = buf.getvalue().encode("utf-8")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    filename = f"sentinel-signups-{timestamp}.csv"
+    return StreamingResponse(
+        iter([csv_bytes]),
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Access-Control-Expose-Headers": "Content-Disposition",
+        },
+    )
 
 
 async def seed_admin():
