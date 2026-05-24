@@ -1,14 +1,17 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends, Query
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import uuid
+import bcrypt
+import jwt
 from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from typing import Optional, List
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from emergentintegrations.payments.stripe.checkout import (
     StripeCheckout,
@@ -27,6 +30,13 @@ db = client[os.environ["DB_NAME"]]
 
 # Stripe key
 STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
+
+# JWT / Admin
+JWT_SECRET = os.environ["JWT_SECRET"]
+JWT_ALGORITHM = "HS256"
+JWT_TTL_HOURS = 24
+ADMIN_EMAIL = os.environ["ADMIN_EMAIL"].lower().strip()
+ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
 # Fixed packages (server-side definition prevents price tampering)
 PACKAGES = {
@@ -365,6 +375,187 @@ async def stats():
     }
 
 
+# ====================== ADMIN AUTH ======================
+
+bearer_scheme = HTTPBearer(auto_error=False)
+
+
+class AdminLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def verify_password(plain: str, hashed: str) -> bool:
+    try:
+        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except Exception:
+        return False
+
+
+def create_admin_token(email: str) -> str:
+    payload = {
+        "sub": email,
+        "role": "admin",
+        "iat": datetime.now(timezone.utc),
+        "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_TTL_HOURS),
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+
+async def get_current_admin(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
+):
+    if credentials is None or not credentials.credentials:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    if payload.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Forbidden")
+    email = (payload.get("sub") or "").lower()
+    admin = await db.admins.find_one({"email": email}, {"_id": 0, "password_hash": 0})
+    if not admin:
+        raise HTTPException(status_code=401, detail="Admin not found")
+    return admin
+
+
+@api_router.post("/admin/login")
+async def admin_login(payload: AdminLogin):
+    email = payload.email.lower().strip()
+    admin = await db.admins.find_one({"email": email})
+    if not admin or not verify_password(payload.password, admin["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    token = create_admin_token(email)
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "expires_in": JWT_TTL_HOURS * 3600,
+        "user": {"email": email, "role": "admin"},
+    }
+
+
+@api_router.get("/admin/me")
+async def admin_me(admin=Depends(get_current_admin)):
+    return admin
+
+
+@api_router.get("/admin/metrics")
+async def admin_metrics(admin=Depends(get_current_admin)):
+    total_signups = await db.waitlist.count_documents({})
+
+    # By source
+    pipeline = [{"$group": {"_id": "$source", "count": {"$sum": 1}}}]
+    by_source_raw = await db.waitlist.aggregate(pipeline).to_list(50)
+    by_source = {row["_id"] or "unknown": row["count"] for row in by_source_raw}
+
+    sentinel_sources = {"hero", "footer", "pricing"}
+    mythos_sources = {"mythos_guard_beta"}
+    sentinel_count = sum(v for k, v in by_source.items() if k in sentinel_sources)
+    mythos_count = sum(v for k, v in by_source.items() if k in mythos_sources)
+    other_count = sum(v for k, v in by_source.items() if k not in sentinel_sources | mythos_sources)
+
+    # Revenue (only paid transactions)
+    paid_cursor = db.payment_transactions.find(
+        {"payment_status": "paid"}, {"_id": 0, "amount": 1}
+    )
+    paid_docs = await paid_cursor.to_list(10000)
+    total_revenue = round(sum(float(d.get("amount", 0)) for d in paid_docs), 2)
+    paid_count = len(paid_docs)
+
+    pending_count = await db.payment_transactions.count_documents(
+        {"payment_status": {"$in": ["initiated", "pending"]}}
+    )
+    founding_members = await db.waitlist.count_documents({"founding_member": True})
+
+    return {
+        "total_signups": total_signups,
+        "by_category": {
+            "scam_link_sentinel": sentinel_count,
+            "mythos_guard": mythos_count,
+            "other": other_count,
+        },
+        "by_source": by_source,
+        "revenue": {
+            "total_paid_usd": total_revenue,
+            "paid_subscriptions": paid_count,
+            "pending_subscriptions": pending_count,
+            "founding_members": founding_members,
+        },
+    }
+
+
+@api_router.get("/admin/signups")
+async def admin_signups(
+    admin=Depends(get_current_admin),
+    search: Optional[str] = Query(None),
+    limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+):
+    query = {}
+    if search:
+        query["email"] = {"$regex": search, "$options": "i"}
+
+    total = await db.waitlist.count_documents(query)
+    cursor = (
+        db.waitlist.find(query, {"_id": 0})
+        .sort("created_at", -1)
+        .skip(offset)
+        .limit(limit)
+    )
+    items = await cursor.to_list(limit)
+
+    # Enrich with payment status
+    emails = [i["email"] for i in items if i.get("email")]
+    payments = {}
+    if emails:
+        async for doc in db.payment_transactions.find(
+            {"email": {"$in": emails}}, {"_id": 0, "email": 1, "payment_status": 1, "amount": 1, "created_at": 1}
+        ):
+            # Keep the most relevant per email (prefer paid > pending)
+            prev = payments.get(doc["email"])
+            if not prev or (doc.get("payment_status") == "paid" and prev.get("payment_status") != "paid"):
+                payments[doc["email"]] = doc
+
+    enriched = []
+    for it in items:
+        p = payments.get(it.get("email"))
+        category = "mythos_guard" if it.get("source") == "mythos_guard_beta" else "scam_link_sentinel"
+        enriched.append({
+            "email": it.get("email"),
+            "source": it.get("source"),
+            "category": category,
+            "created_at": it.get("created_at"),
+            "founding_member": bool(it.get("founding_member", False)),
+            "payment_status": (p or {}).get("payment_status"),
+            "payment_amount": (p or {}).get("amount"),
+        })
+
+    return {"total": total, "limit": limit, "offset": offset, "items": enriched}
+
+
+async def seed_admin():
+    existing = await db.admins.find_one({"email": ADMIN_EMAIL})
+    if existing is None:
+        await db.admins.insert_one({
+            "email": ADMIN_EMAIL,
+            "password_hash": hash_password(ADMIN_PASSWORD),
+            "role": "admin",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+    elif not verify_password(ADMIN_PASSWORD, existing["password_hash"]):
+        await db.admins.update_one(
+            {"email": ADMIN_EMAIL},
+            {"$set": {"password_hash": hash_password(ADMIN_PASSWORD)}},
+        )
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -380,6 +571,17 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+
+@app.on_event("startup")
+async def on_startup():
+    await seed_admin()
+    await db.admins.create_index("email", unique=True)
+    await db.waitlist.create_index("email", unique=True)
+    await db.waitlist.create_index("source")
+    await db.payment_transactions.create_index("session_id", unique=True)
+    await db.payment_transactions.create_index("email")
+    logger.info("Startup complete: admin seeded, indexes ensured.")
 
 
 @app.on_event("shutdown")

@@ -4,6 +4,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import Home from "./pages/Home";
 import Success from "./pages/Success";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import RequireAdmin from "./pages/admin/RequireAdmin";
 
 function App() {
   useEffect(() => {
@@ -28,6 +31,15 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <RequireAdmin>
+                <AdminDashboard />
+              </RequireAdmin>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </div>
