@@ -1,0 +1,116 @@
+{
+  "theme": "dark",
+  "archetype": "5 (Luxury) + 4 (Swiss & High-Contrast) - Premium Security",
+  "brand_name": "Scam-Link Sentinel",
+  "colors": {
+    "background": {
+      "base": "#0A0A0A",
+      "surface": "#141414",
+      "surface_elevated": "#1C1C1C",
+      "glass": "bg-black/60 backdrop-blur-2xl border border-white/10"
+    },
+    "primary": {
+      "DEFAULT": "#FFB000",
+      "hover": "#FFC133",
+      "text": "#000000",
+      "glow": "rgba(255, 176, 0, 0.4)"
+    },
+    "accent": {
+      "gold": "#FFD700",
+      "safe": "#00E676",
+      "danger": "#FF3333"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "muted": "#71717A"
+    },
+    "border": {
+      "DEFAULT": "rgba(255, 255, 255, 0.1)",
+      "highlight": "rgba(255, 176, 0, 0.3)"
+    }
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Unbounded, sans-serif",
+      "weights": ["400", "700", "900"],
+      "tracking": "tracking-tight"
+    },
+    "body": {
+      "font_family": "Outfit, sans-serif",
+      "weights": ["300", "400", "500"]
+    },
+    "mono": {
+      "font_family": "JetBrains Mono, monospace",
+      "usage": "Threat Feed, Risk Scores, Logs"
+    }
+  },
+  "layout_spacing": {
+    "philosophy": "Generous Spacing (p-8 to p-24) with strict grid structures. Bento Grids for features.",
+    "bento_grid": "grid-cols-1 md:grid-cols-12 gap-6 md:gap-8",
+    "surface_treatment": "Deep dark backgrounds with 1px border-white/10, NO heavy gradients unless it's a glowing 'tracing beam' for the pricing card."
+  },
+  "components": {
+    "hero": {
+      "structure": "Asymmetric layout. Left: High-impact typography + Waitlist Form. Right: 3D Smartphone Bot Mockup floating over Amber Shield.",
+      "effects": "Hero image needs a glowing radial gradient behind it. Max overlay opacity bg-black/50."
+    },
+    "forward_to_check_demo": {
+      "structure": "Interactive Shadcn Form inside a Glassmorphism container. Input for URL, Button to 'Scan'. Result reveals SAFE/DANGER animation.",
+      "effects": "Use Framer Motion for revealing the verdict. Danger verdict flashes red, Safe verdict pulses green."
+    },
+    "threat_feed": {
+      "structure": "Full-width marquee (react-fast-marquee).",
+      "style": "Monospace typography, text-sm, red/green accents for 'BLOCKED' or 'PHISHING'."
+    },
+    "pricing_card": {
+      "structure": "Central focus, 'Tracing Beam' animated border effect, solid CTA.",
+      "accents": "Electric Amber glow."
+    }
+  },
+  "media": {
+    "images": [
+      {
+        "category": "hero_background",
+        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/bca9378910529a030c4ee75ef9996dc5745fe3cd083f6059e67b94c640b300a2.png",
+        "description": "Cinematic abstract glowing electric amber and gold shield polygon"
+      },
+      {
+        "category": "bot_mockup",
+        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/8314a73724ff726f6f1bc4084393c162c957b9c37d0ed5e26662e1392988355d.png",
+        "description": "3D render of a dark sleek modern smartphone with chat interface"
+      },
+      {
+        "category": "feature_safe_icon",
+        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/6a91a71d06c04f00a3e0dc348f9b1b159ef9fdb4acebf037223bcfe18221abcd.png",
+        "description": "Abstract glowing neon green checkmark and secure lock"
+      },
+      {
+        "category": "feature_danger_icon",
+        "url": "https://static.prod-images.emergentagent.com/jobs/28c807d1-184d-41e8-8be7-e6af66862383/images/cc4527dd0872e895647d377ccbd165a2361cf8f4f08332817c3a0b1d63ad82db.png",
+        "description": "Abstract glowing crimson red warning hazard skull"
+      },
+      {
+        "category": "abstract_network_bg",
+        "url": "https://images.unsplash.com/photo-1544380904-c686aad2fc40?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNzl8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGRhcmslMjBjeWJlcnNlY3VyaXR5JTIwbmV0d29ya3xlbnwwfHx8fDE3Nzk2MTkxOTB8MA&ixlib=rb-4.1.0&q=85",
+        "description": "3D computer graphics network dark bg"
+      }
+    ]
+  },
+  "interactions": {
+    "hover_states": "All buttons MUST explicitly define hover colors. Primary buttons: bg-[#FFB000] hover:bg-[#FFC133] text-black.",
+    "animations": "Framer motion for staggered bento grid entrance. react-fast-marquee for threat feed.",
+    "testing": "All interactive elements MUST have data-testid attributes (e.g., data-testid='waitlist-submit')."
+  },
+  "instructions_to_main_agent": [
+    "Use pure HTML/Tailwind for structural layout (bento grid, hero).",
+    "Use Shadcn for Interactive elements (Accordion for FAQ, Input/Button for Waitlist & Scan demo).",
+    "Integrate Stripe Checkout for the pricing button ($4.99/mo).",
+    "Store Waitlist form submissions in MongoDB.",
+    "DO NOT use Inter or standard sans for headings. Use 'Unbounded' font for headings, 'Outfit' for body, and 'JetBrains Mono' for data/logs.",
+    "Implement the 'Forward to Check' demo as an actual functional UI component that takes an input and shows a simulated scanning state then a SAFE/DANGER result.",
+    "Use Lucide React for standard icons (Shield, Lock, AlertTriangle).",
+    "Follow 'Tracing Beam' surface strategy for the pricing card.",
+    "Ensure high contrast rules are respected as per design system."
+  ]
+}
