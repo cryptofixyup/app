@@ -6,7 +6,7 @@ const links = [
   { label: "Modules", href: "#modules" },
   { label: "Mythos Guard", href: "#mythos-guard" },
   { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export default function Nav() {
