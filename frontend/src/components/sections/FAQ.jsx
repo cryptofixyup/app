@@ -8,7 +8,7 @@ import {
 const FAQS = [
   {
     q: "What exactly does Scam-Link Sentinel scan for?",
-    a: "Wallet drainers, typosquat domains, fake AI-investment dashboards, withdrawal-lock contracts, fake APY math, phishing kits, malicious mint pages, and Telegram impersonators. MYTHOS runs 1,247 heuristics plus 14 external threat feeds on every check.",
+    a: "Wallet drainers, typosquat domains, fake AI-investment dashboards, withdrawal-lock contracts, fake APY math, phishing kits, malicious mint pages, and Telegram impersonators — every rule documented from a real scam we've investigated.",
   },
   {
     q: "Do I have to connect my wallet?",
@@ -16,19 +16,19 @@ const FAQS = [
   },
   {
     q: "How is this different from a normal URL checker?",
-    a: "Generic checkers look at SSL and blacklists. We look at on-chain forensic signals, withdrawal-lock contract patterns, fake-APY math, and 'mind-virus' social-engineering schemas specifically engineered against crypto users.",
+    a: "Generic checkers look at SSL and blacklists. We look at on-chain heuristics, withdrawal-lock contract patterns, fake-APY math, and 'mind-virus' social-engineering schemas specifically engineered against crypto users.",
   },
   {
-    q: "What does 'Founding Member' actually get me?",
-    a: "Your $4.99/mo rate is locked for life — even when public pricing rises to $14.99. You get a founder badge in the bot, priority scan queue, vote on threat feed sources, MYTHOS API access, and entry into the private Sentinel Circle channel.",
+    q: "Is there a paid plan?",
+    a: "Not yet. We're in private beta — no prices, no subscriptions, no \"founder tier\". When the bot opens, waitlist members get invites first. Any future pricing decisions happen after public launch and will be transparent.",
+  },
+  {
+    q: "Who builds this?",
+    a: "@CryptoFixYup — an independent investigator documenting active crypto scams. Every rule in MYTHOS comes from a real case. Contact details and the code repository are linked in the footer.",
   },
   {
     q: "When does the bot launch?",
-    a: "Founding-member beta is rolling out in waves. Stripe subscribers get access first; waitlist users follow. Public launch follows once we clear 50,000 active users.",
-  },
-  {
-    q: "Can I cancel?",
-    a: "Yes — anytime, one click in Stripe. No retention dark patterns, no email hostage.",
+    a: "We open in invite waves to waitlist members. No fixed date — we ship when the engine is honest about what it can and can't catch.",
   },
 ];
 

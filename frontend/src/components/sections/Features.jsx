@@ -8,7 +8,7 @@ const FEATURES = [
     accentSoft: "rgba(0, 240, 255, 0.15)",
     tag: "MODULE_01",
     title: "Forward to Check",
-    body: "Paste any suspicious link, screenshot, or DM offer into our bot. MYTHOS returns a SAFE or DANGER verdict in under 2 seconds — no wallet connect, no install.",
+    body: "Paste any suspicious link, screenshot, or DM offer into our bot. MYTHOS returns a SAFE or DANGER verdict — no wallet connect, no install.",
     bullets: ["Instant verdict", "Telegram + WhatsApp", "Works on screenshots"],
   },
   {
@@ -17,7 +17,7 @@ const FEATURES = [
     accentSoft: "rgba(255, 0, 127, 0.15)",
     tag: "MODULE_02",
     title: "Zero-Trust Scanner",
-    body: "Flags hidden withdrawal-lock patterns, fake APY logic, and rug-pull contract signatures before you deposit a single cent. Built on 1,247 active heuristics.",
+    body: "Flags hidden withdrawal-lock patterns, fake APY logic, and rug-pull contract signatures — every rule comes from a scam we've actually investigated.",
     bullets: ["Withdrawal-lock detector", "Fake APY math check", "Contract drainer DB"],
   },
   {

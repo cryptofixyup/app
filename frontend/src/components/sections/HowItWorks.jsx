@@ -14,7 +14,7 @@ const STEPS = [
     icon: Cpu,
     color: "#FF007F",
     title: "MYTHOS scans.",
-    desc: "1,247 heuristics + on-chain forensic signals + 14 threat feeds. Cross-checked in under 2 seconds.",
+    desc: "Rule-based heuristics built from documented investigations — cross-checked against every pattern we've tracked.",
   },
   {
     n: "03",
@@ -27,7 +27,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section className="relative py-24 md:py-32 px-6 md:px-12 lg:px-20">
+    <section id="how-it-works" className="relative py-24 md:py-32 px-6 md:px-12 lg:px-20">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
           <div className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#00F0FF] mb-4">

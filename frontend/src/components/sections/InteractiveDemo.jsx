@@ -78,9 +78,9 @@ export default function InteractiveDemo() {
           <div className="flex items-center justify-between px-5 py-3 border-b border-white/8 font-mono text-[10px] uppercase tracking-[0.22em]">
             <div className="flex items-center gap-3 text-white/60">
               <span className="pulse-dot" />
-              <span>MYTHOS // forensic-scan-v0.9</span>
+              <span>MYTHOS // heuristic-preview-v0.9</span>
             </div>
-            <div className="text-white/40 hidden sm:block">node_001 · 482 req/s</div>
+            <div className="text-white/40 hidden sm:block">beta · pattern-based</div>
           </div>
 
           {/* Input */}

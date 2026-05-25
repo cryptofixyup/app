@@ -24,14 +24,6 @@ const FEATURES = [
     body: "Every incoming message is scanned for phishing patterns, malicious links, and AI-generated deepfake prompts through the MYTHOS protocol — before you ever read it.",
   },
   {
-    icon: Brain,
-    accent: "#FF007F",
-    tag: "MG_02",
-    title: "Bias Elimination",
-    sub: "Cognitive defense",
-    body: "Auto-flags manipulation tactics: FOMO triggers, false scarcity, fear-based urgency, fake authority — the exact playbook used to weaponize your reflexes against you.",
-  },
-  {
     icon: Inbox,
     accent: "#7000FF",
     tag: "MG_03",
@@ -282,7 +274,7 @@ function PipelineSchematic() {
             <div className="font-mono text-[11px] space-y-2">
               <PipelineLog text="› parse content schema ............ OK" color="#00F0FF" />
               <PipelineLog
-                text="› flag manipulation triggers ...... 4 hits"
+                text="› flag manipulation triggers ...... matched"
                 color="#FF007F"
                 delay={0.15}
               />
@@ -304,8 +296,8 @@ function PipelineSchematic() {
               <PipelineLog text="› quarantine + decontaminate ...... done" color="#00F0FF" delay={0.75} />
             </div>
             <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em]">
-              <span className="text-white/40">latency</span>
-              <span className="text-[#00F0FF]">0.4s</span>
+              <span className="text-white/40">status</span>
+              <span className="text-[#00F0FF]">beta</span>
             </div>
           </div>
         </motion.div>
@@ -329,11 +321,11 @@ function PipelineSchematic() {
           >
             <div className="flex items-center gap-2 text-white/40 text-[10px]">
               <span>QUARANTINED</span>
-              <span className="ml-auto">scanned · 0.4s</span>
+              <span className="ml-auto">scanned</span>
             </div>
             <div className="text-white/85 leading-relaxed">
-              <span className="text-[#00FF66]">✓</span> Phishing message blocked. 4 manipulation
-              triggers neutralized. Source flagged across 14 threat feeds.
+              <span className="text-[#00FF66]">✓</span> Phishing message blocked. Manipulation
+              triggers neutralized. Source flagged.
               <br />
               <span className="text-white/40">— No action required.</span>
             </div>
