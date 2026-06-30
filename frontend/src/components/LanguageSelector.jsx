@@ -15,7 +15,9 @@ export default function LanguageSelector({ variant = "bar", className = "" }) {
     i18n.changeLanguage(code);
     try {
       localStorage.setItem("sentinel_lang", code);
-    } catch {}
+    } catch {
+      /* localStorage unavailable — non-fatal */
+    }
     document.documentElement.lang = code;
   };
 

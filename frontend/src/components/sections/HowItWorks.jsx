@@ -1,45 +1,29 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Forward, Cpu, ShieldCheck } from "lucide-react";
 
-const STEPS = [
-  {
-    n: "01",
-    icon: Forward,
-    color: "#00F0FF",
-    title: "Forward.",
-    desc: "Paste any suspicious link, screenshot, DM offer, or 'investment dashboard' into our Telegram or WhatsApp bot.",
-  },
-  {
-    n: "02",
-    icon: Cpu,
-    color: "#FF007F",
-    title: "MYTHOS scans.",
-    desc: "Rule-based heuristics built from documented investigations — cross-checked against every pattern we've tracked.",
-  },
-  {
-    n: "03",
-    icon: ShieldCheck,
-    color: "#00FF66",
-    title: "Verdict.",
-    desc: "SAFE, WARNING, or DANGER — with the exact threat signature, risk score, and what to do next.",
-  },
-];
-
 export default function HowItWorks() {
+  const { t } = useTranslation();
+
+  const STEPS = [
+    { n: "01", icon: Forward, color: "#00F0FF", title: t("how.s1_title"), desc: t("how.s1_desc") },
+    { n: "02", icon: Cpu, color: "#FF007F", title: t("how.s2_title"), desc: t("how.s2_desc") },
+    { n: "03", icon: ShieldCheck, color: "#00FF66", title: t("how.s3_title"), desc: t("how.s3_desc") },
+  ];
+
   return (
     <section id="how-it-works" className="relative py-24 md:py-32 px-6 md:px-12 lg:px-20">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
           <div className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#00F0FF] mb-4">
-            // OPERATING_FLOW
+            {t("how.kicker")}
           </div>
           <h2 className="font-display font-black text-white text-4xl md:text-5xl tracking-tight">
-            Forward. Scan. Survive.
+            {t("how.headline")}
           </h2>
         </div>
 
         <div className="relative grid md:grid-cols-3 gap-8 md:gap-4">
-          {/* Connecting line (desktop) */}
           <div
             className="hidden md:block absolute top-12 left-[16%] right-[16%] h-px pointer-events-none"
             style={{
@@ -75,9 +59,7 @@ export default function HowItWorks() {
                   {s.n}
                 </span>
               </div>
-              <h3
-                className="font-display font-bold text-white text-2xl md:text-3xl mb-3 tracking-tight"
-              >
+              <h3 className="font-display font-bold text-white text-2xl md:text-3xl mb-3 tracking-tight">
                 {s.title}
               </h3>
               <p className="text-white/60 font-mono text-sm leading-relaxed max-w-xs mx-auto">

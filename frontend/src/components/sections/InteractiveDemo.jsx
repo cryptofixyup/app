@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { ScanLine, ShieldCheck, ShieldAlert, ShieldX, Loader2 } from "lucide-react";
 import { API } from "../../lib/api";
 
@@ -12,8 +13,9 @@ const EXAMPLES = [
 ];
 
 export default function InteractiveDemo() {
+  const { t } = useTranslation();
   const [url, setUrl] = useState("");
-  const [phase, setPhase] = useState("idle"); // idle | scanning | result
+  const [phase, setPhase] = useState("idle");
   const [result, setResult] = useState(null);
 
   const runScan = async (target) => {
@@ -22,13 +24,9 @@ export default function InteractiveDemo() {
     setUrl(value);
     setPhase("scanning");
     setResult(null);
-    // Artificial cinematic delay
     const fakeDelay = new Promise((r) => setTimeout(r, 1800));
     try {
-      const [resp] = await Promise.all([
-        axios.post(`${API}/scan`, { url: value }),
-        fakeDelay,
-      ]);
+      const [resp] = await Promise.all([axios.post(`${API}/scan`, { url: value }), fakeDelay]);
       setResult(resp.data);
       setPhase("result");
     } catch {
@@ -49,6 +47,8 @@ export default function InteractiveDemo() {
     setUrl("");
   };
 
+  const verdictKey =
+    result?.verdict === "SAFE" ? "verdict_safe" : result?.verdict === "DANGER" ? "verdict_danger" : "verdict_warning";
   const verdictColor =
     result?.verdict === "SAFE" ? "#00FF66" : result?.verdict === "DANGER" ? "#FF0033" : "#FFB800";
   const VerdictIcon =
@@ -57,47 +57,46 @@ export default function InteractiveDemo() {
   return (
     <section id="scanner" className="relative py-24 md:py-32 px-6 md:px-12 lg:px-20">
       <div className="max-w-[1100px] mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <div className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#00F0FF] mb-4">
-            // FORWARD-TO-CHECK MODULE
+            {t("demo.kicker")}
           </div>
           <h2 className="font-display font-black text-white text-4xl md:text-5xl mb-4 tracking-tight">
-            Try it. Paste a link. Get a verdict.
+            {t("demo.headline")}
           </h2>
-          <p className="text-white/60 font-mono text-sm md:text-base max-w-xl mx-auto">
-            The same MYTHOS engine that runs on Telegram and WhatsApp. No wallet connect. No
-            install. Just instant truth.
+          <p className="text-white/60 font-mono text-sm md:text-base max-w-2xl mx-auto">
+            {t("demo.sub")}
           </p>
+          <div
+            className="mt-5 inline-block px-3 py-1.5 border border-[#FFB800]/40 bg-[#FFB800]/5 font-mono text-[10px] uppercase tracking-[0.22em] text-[#FFB800] max-w-2xl"
+            data-testid="scanner-disclaimer"
+          >
+            ⚠ {t("demo.disclaimer")}
+          </div>
         </div>
 
         <div className="panel corners relative" data-testid="scanner-panel">
           <span className="tl"></span>
           <span className="tr"></span>
 
-          {/* Header bar */}
           <div className="flex items-center justify-between px-5 py-3 border-b border-white/8 font-mono text-[10px] uppercase tracking-[0.22em]">
             <div className="flex items-center gap-3 text-white/60">
               <span className="pulse-dot" />
-              <span>MYTHOS // heuristic-preview-v0.9</span>
+              <span>{t("demo.header_left")}</span>
             </div>
-            <div className="text-white/40 hidden sm:block">beta · pattern-based</div>
+            <div className="text-white/40 hidden sm:block">{t("demo.header_right")}</div>
           </div>
 
-          {/* Input */}
           <div className="p-6 md:p-8">
             <div className="flex flex-col md:flex-row gap-3">
               <div className="relative flex-1">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#00F0FF] font-mono text-sm">
-                  &gt;
-                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#00F0FF] font-mono text-sm">&gt;</span>
                 <input
                   type="text"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") runScan();
-                  }}
-                  placeholder="paste any url, offer or dashboard link..."
+                  onKeyDown={(e) => { if (e.key === "Enter") runScan(); }}
+                  placeholder={t("demo.placeholder")}
                   className="w-full bg-[#050505] border border-white/10 pl-10 pr-4 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF] font-mono text-sm transition-colors"
                   data-testid="scanner-input"
                   disabled={phase === "scanning"}
@@ -111,27 +110,22 @@ export default function InteractiveDemo() {
                   data-testid="scanner-submit-button"
                 >
                   {phase === "scanning" ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" /> Scanning
-                    </>
+                    <><Loader2 size={16} className="animate-spin" /> {t("demo.scan_loading")}</>
                   ) : (
-                    <>
-                      <ScanLine size={16} /> Scan now
-                    </>
+                    <><ScanLine size={16} /> {t("demo.scan_button")}</>
                   )}
                 </button>
               ) : (
                 <button className="btn-ghost" onClick={reset} data-testid="scanner-reset-button">
-                  Scan another
+                  {t("demo.scan_another")}
                 </button>
               )}
             </div>
 
-            {/* Example chips */}
             {phase === "idle" && (
               <div className="mt-5 flex flex-wrap gap-2">
                 <span className="text-[10px] uppercase tracking-[0.22em] text-white/40 font-mono mr-2 self-center">
-                  TRY:
+                  {t("demo.try_label")}
                 </span>
                 {EXAMPLES.map((ex) => (
                   <button
@@ -146,7 +140,6 @@ export default function InteractiveDemo() {
               </div>
             )}
 
-            {/* Scanning animation */}
             <AnimatePresence mode="wait">
               {phase === "scanning" && (
                 <motion.div
@@ -158,12 +151,12 @@ export default function InteractiveDemo() {
                 >
                   <div className="scan-line" />
                   <div className="font-mono text-xs text-white/60 space-y-2">
-                    <ScanLog text="› init MYTHOS heuristic engine ......... OK" />
-                    <ScanLog text="› fetch domain WHOIS .................... OK" delay={0.2} />
-                    <ScanLog text="› cross-ref 14 threat feeds ............. OK" delay={0.5} />
-                    <ScanLog text="› parse on-chain forensic signals ....... OK" delay={0.8} />
-                    <ScanLog text="› evaluate withdrawal-lock heuristics ... OK" delay={1.1} />
-                    <ScanLog text="› computing verdict ..." delay={1.4} accent />
+                    <ScanLog text={t("demo.log_init")} />
+                    <ScanLog text={t("demo.log_whois")} delay={0.2} />
+                    <ScanLog text={t("demo.log_feeds")} delay={0.5} />
+                    <ScanLog text={t("demo.log_onchain")} delay={0.8} />
+                    <ScanLog text={t("demo.log_lock")} delay={1.1} />
+                    <ScanLog text={t("demo.log_verdict")} delay={1.4} accent />
                   </div>
                 </motion.div>
               )}
@@ -177,7 +170,6 @@ export default function InteractiveDemo() {
                   className="mt-8"
                   data-testid="scanner-result"
                 >
-                  {/* Verdict banner */}
                   <div
                     className="relative border p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-6"
                     style={{
@@ -198,15 +190,13 @@ export default function InteractiveDemo() {
                         style={{ color: verdictColor }}
                         data-testid="scanner-verdict"
                       >
-                        {result.verdict}
+                        {t(`demo.${verdictKey}`)}
                       </div>
-                      <div className="font-mono text-xs text-white/50 mt-1 break-all">
-                        {result.scanned_url}
-                      </div>
+                      <div className="font-mono text-xs text-white/50 mt-1 break-all">{result.scanned_url}</div>
                     </div>
                     <div className="text-right">
                       <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
-                        Risk score
+                        {t("demo.risk_score")}
                       </div>
                       <div
                         className="font-display font-black text-4xl tabular-nums"
@@ -218,28 +208,27 @@ export default function InteractiveDemo() {
                     </div>
                   </div>
 
-                  {/* Findings */}
                   <div className="grid md:grid-cols-2 gap-4 mt-4">
                     <div className="border border-white/10 p-5">
                       <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#FF007F] mb-3">
-                        Threat signals
+                        {t("demo.threat_signals")}
                       </div>
                       {result.threats?.length ? (
                         <ul className="space-y-2 font-mono text-xs text-white/80">
-                          {result.threats.map((t, i) => (
+                          {result.threats.map((th, i) => (
                             <li key={i} className="flex gap-2">
                               <span style={{ color: "#FF0033" }}>×</span>
-                              <span>{t}</span>
+                              <span>{th}</span>
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <div className="font-mono text-xs text-white/50">No threats detected.</div>
+                        <div className="font-mono text-xs text-white/50">{t("demo.no_threats")}</div>
                       )}
                     </div>
                     <div className="border border-white/10 p-5">
                       <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#00F0FF] mb-3">
-                        Forensic analysis
+                        {t("demo.forensic_analysis")}
                       </div>
                       {result.analysis?.length ? (
                         <ul className="space-y-2 font-mono text-xs text-white/80">
@@ -251,7 +240,7 @@ export default function InteractiveDemo() {
                           ))}
                         </ul>
                       ) : (
-                        <div className="font-mono text-xs text-white/50">No signal data.</div>
+                        <div className="font-mono text-xs text-white/50">{t("demo.no_signal")}</div>
                       )}
                     </div>
                   </div>
