@@ -84,7 +84,6 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadSignups(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
   const refreshAll = async () => {

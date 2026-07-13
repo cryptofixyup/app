@@ -75,7 +75,7 @@ export default function Success() {
               Confirming your founder badge…
             </h1>
             <p className="text-white/60 font-mono text-sm">
-              We're polling Stripe. This usually takes under 5 seconds.
+              We&apos;re polling Stripe. This usually takes under 5 seconds.
             </p>
           </>
         )}
@@ -121,7 +121,7 @@ export default function Success() {
               {status.state === "no-session" ? "Missing session" : "Verification pending"}
             </div>
             <h1 className="font-display font-black text-white text-2xl md:text-3xl tracking-tight mb-3">
-              We couldn't confirm your payment yet.
+              We couldn&apos;t confirm your payment yet.
             </h1>
             <p className="text-white/60 font-mono text-sm mb-8">
               If you completed checkout, check your inbox for the Stripe receipt — your badge will
