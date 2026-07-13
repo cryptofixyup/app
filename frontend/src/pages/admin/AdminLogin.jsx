@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { ShieldHalf, Lock, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { login } from "../../lib/adminApi";
+import NoIndex from "../../components/NoIndex";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function AdminLogin() {
       style={{ background: "#050505" }}
       data-testid="admin-login-page"
     >
+      <NoIndex title="Admin — Scam-Link Sentinel" />
       <div className="absolute inset-0 cyber-grid radial-mask pointer-events-none" />
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"

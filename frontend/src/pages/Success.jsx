@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ShieldCheck, Loader2, ShieldAlert, ArrowLeft } from "lucide-react";
 import { API } from "../lib/api";
+import NoIndex from "../components/NoIndex";
 
 export default function Success() {
   const [params] = useSearchParams();
@@ -58,6 +59,7 @@ export default function Success() {
       style={{ background: "#050505" }}
       data-testid="success-page"
     >
+      <NoIndex title="Success — Scam-Link Sentinel" />
       <div className="absolute inset-0 cyber-grid radial-mask pointer-events-none" />
       <div className="relative panel corners max-w-xl w-full p-10 text-center">
         <span className="tl"></span>

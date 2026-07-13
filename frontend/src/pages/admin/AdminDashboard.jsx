@@ -22,6 +22,7 @@ import {
   clearToken,
   getToken,
 } from "../../lib/adminApi";
+import NoIndex from "../../components/NoIndex";
 
 const PAGE_SIZE = 50;
 
@@ -123,6 +124,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen relative" style={{ background: "#050505" }} data-testid="admin-dashboard">
+      <NoIndex title="Founder console — Scam-Link Sentinel" />
       <div className="absolute inset-0 cyber-grid-fine opacity-25 pointer-events-none" />
 
       {/* Top bar */}
