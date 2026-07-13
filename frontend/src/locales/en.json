@@ -1,5 +1,10 @@
 {
   "lang": { "label": "Language" },
+  "seo": {
+    "title": "Scam-Link Sentinel — The Guardian for the Swipe Generation",
+    "description": "Protect yourself from scams, phishing, and malicious apps with SAFEWEB's Scam-Link Sentinel — live URL forensics that detect threats in milliseconds. Beta · waitlist open.",
+    "og_locale": "en_US"
+  },
   "nav": {
     "scanner": "Scanner",
     "modules": "Modules",

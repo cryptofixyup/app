@@ -1,5 +1,10 @@
 {
   "lang": { "label": "Язык" },
+  "seo": {
+    "title": "Scam-Link Sentinel — Страж для поколения Swipe",
+    "description": "Защитись от скамов, фишинга и вредоносных приложений с Scam-Link Sentinel от SAFEWEB — живая URL-криминалистика, выявляющая угрозы за миллисекунды. Бета · список ожидания открыт.",
+    "og_locale": "ru_RU"
+  },
   "nav": { "scanner": "Сканер", "modules": "Модули", "mythos_guard": "Mythos Guard", "how": "Как работает", "contact": "Контакты", "join_waitlist": "В список" },
   "hero": {
     "pill": "БЕТА · движок MYTHOS · в приватном тесте",

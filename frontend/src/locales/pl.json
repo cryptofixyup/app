@@ -1,5 +1,10 @@
 {
   "lang": { "label": "Język" },
+  "seo": {
+    "title": "Scam-Link Sentinel — Strażnik dla Pokolenia Swipe",
+    "description": "Chroń się przed scamami, phishingiem i złośliwymi aplikacjami dzięki Scam-Link Sentinel od SAFEWEB — analiza URL na żywo, wykrywająca zagrożenia w milisekundach. Beta · lista oczekujących otwarta.",
+    "og_locale": "pl_PL"
+  },
   "nav": {
     "scanner": "Skaner",
     "modules": "Moduły",

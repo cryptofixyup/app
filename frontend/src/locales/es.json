@@ -1,5 +1,10 @@
 {
   "lang": { "label": "Idioma" },
+  "seo": {
+    "title": "Scam-Link Sentinel — El Guardián de la Generación Swipe",
+    "description": "Protégete de estafas, phishing y apps maliciosas con Scam-Link Sentinel de SAFEWEB — análisis forense de URL en vivo que detecta amenazas en milisegundos. Beta · lista de espera abierta.",
+    "og_locale": "es_ES"
+  },
   "nav": { "scanner": "Escáner", "modules": "Módulos", "mythos_guard": "Mythos Guard", "how": "Cómo funciona", "contact": "Contacto", "join_waitlist": "A la lista" },
   "hero": {
     "pill": "BETA · motor MYTHOS · en pruebas privadas",
